@@ -1,0 +1,60 @@
+FROM ubuntu:16.04
+
+USER root
+
+# base installs
+RUN apt-get update
+RUN apt-get install -y software-properties-common wget vim git
+
+# install java 7
+RUN add-apt-repository ppa:webupd8team/java
+RUN apt-get update
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN apt-get -y install oracle-java7-installer -y
+
+
+#install spark
+RUN wget http://mirror.nexcess.net/apache/spark/spark-1.6.2/spark-1.6.2-bin-hadoop2.6.tgz
+# RUN wget http://www.gtlib.gatech.edu/pub/apache/spark/spark-1.6.1/spark-1.6.1-bin-hadoop2.6.tgz
+RUN tar xvf spark-1.6.2-bin-hadoop2.6.tgz -C ~/ && rm /spark-1.6.2-bin-hadoop2.6.tgz
+RUN mv ~/spark-1.6.2-bin-hadoop2.6 ~/spark
+
+# install anaconda
+RUN apt-get install bzip2 -y
+RUN cd ~ && wget http://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
+RUN bash ~/Anaconda3-4.2.0-Linux-x86_64.sh -b -p /root/anaconda
+ENV PATH /root/anaconda/bin:$PATH
+
+#ENV SPARK
+ENV PYSPARK_PYTHON python3
+ENV PYSPARK_DRIVER_PYTHON jupyter
+ENV PYSPARK_DRIVER_PYTHON_OPTS "notebook --no-browser --port=8888 --ip='0.0.0.0'"
+ENV PATH /root/spark/bin:$PATH
+
+
+# Install python packages
+RUN conda install bokeh -y
+RUN conda install csvkit -y
+RUN pip install utils
+RUN conda install seaborn -y
+RUN conda install matplotlib -y
+#RUN conda install sklearn -y
+RUN conda install scipy -y
+RUN conda install numpy -y
+RUN conda install ipython -y
+
+
+# expose jupyter notebook port 8888
+EXPOSE 8888
+EXPOSE 4040
+
+# make directory for notebooks
+RUN mkdir /root/jup
+
+# change dir
+WORKDIR /root/jup
+
+# default command
+
+CMD ["/bin/bash"]
+

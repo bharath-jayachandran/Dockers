@@ -1,0 +1,52 @@
+#Base Image
+FROM ubuntu:16.04
+
+#Install OS Dependencies
+RUN  apt-get update \
+  && apt-get install -y wget curl sudo software-properties-common \
+  && rm -rf /var/lib/apt/lists/*
+
+#Install Java
+RUN add-apt-repository ppa:webupd8team/java
+RUN apt-get update
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN apt-get -y install oracle-java8-installer -y
+
+
+#Install Chrome
+#RUN \
+#  wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - && \
+#  echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list && \
+#  apt-get update && \
+#  apt-get install -y google-chrome-stable && \
+#  rm -rf /var/lib/apt/lists/*
+
+
+
+
+
+
+#Install nodejs, protractor, webdriver-manager
+#RUN curl --silent --location https://deb.nodesource.com/setup_4.x | sudo bash -
+
+RUN curl -sL https://deb.nodesource.com/setup_8.x |sudo -E bash -
+RUN apt-get install -y nodejs
+RUN npm install -g protractor
+#RUN npm install -g webdriver-manager
+RUN webdriver-manager update
+
+#Add the application
+ADD ocelot-e2e-test-framework /home/ubuntu/ocelot-e2e-test-framework
+WORKDIR cd /home/ubuntu/ocelot-e2e-test-framework/
+RUN npm update
+
+#Install application dependencies
+RUN npm install protractor-helpers protractor-jasmine2-html-reporter jquery jsdom
+
+WORKDIR /home/ubuntu/ocelot-e2e-test-framework/
+
+#Run the application
+#CMD ["protractor pConfig"]
+
+CMD ["protractor config"]
+

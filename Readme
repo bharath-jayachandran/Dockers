@@ -1,0 +1,20 @@
+Keep the Dockerfile in a empty directory.
+
+Build the container - $ sudo docker build -t <tag-name> .
+
+start the container - $ sudo docker run -it -p 8888:8888 <image-id>
+
+Execute the command inside the container - $ pyspark
+
+open your favourite browser - localhost:8888
+
+
+To list images - sudo docker images
+
+To list running containers - sudo docker ps
+
+To copy data from local host to docker container - sudo docker cp LOCALPATH CONTAINER ID:PATH
+
+To copy data from docker container to local host - sudo docker cp CONTAINER ID:PATH LOCALPATH
+
+To commit chages in docker container - sudo docker commit container ID tag-name:version

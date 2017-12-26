@@ -3,8 +3,12 @@ FROM ubuntu:16.04
 USER root
 
 # base installs
-RUN apt-get update
-RUN apt-get install -y software-properties-common wget vim git
+RUN apt-get update && apt-get install -y \
+software-properties-common \
+wget \
+vim \
+git \
+bzip2 
 
 # install java 7
 RUN add-apt-repository ppa:webupd8team/java
@@ -20,7 +24,6 @@ RUN tar xvf spark-1.6.2-bin-hadoop2.6.tgz -C ~/ && rm /spark-1.6.2-bin-hadoop2.6
 RUN mv ~/spark-1.6.2-bin-hadoop2.6 ~/spark
 
 # install anaconda
-RUN apt-get install bzip2 -y
 RUN cd ~ && wget http://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
 RUN bash ~/Anaconda3-4.2.0-Linux-x86_64.sh -b -p /root/anaconda
 ENV PATH /root/anaconda/bin:$PATH
@@ -33,20 +36,18 @@ ENV PATH /root/spark/bin:$PATH
 
 
 # Install python packages
-RUN conda install bokeh -y
-RUN conda install csvkit -y
-RUN pip install utils
-RUN conda install seaborn -y
-RUN conda install matplotlib -y
-#RUN conda install sklearn -y
-RUN conda install scipy -y
-RUN conda install numpy -y
-RUN conda install ipython -y
+RUN conda install bokeh -y \
+    conda install csvkit -y \
+    pip install utils \
+    conda install seaborn -y \
+    conda install matplotlib -y \
+    conda install scipy -y \
+    conda install numpy -y \
+    conda install ipython -y \
 
 
 # expose jupyter notebook port 8888
-EXPOSE 8888
-EXPOSE 4040
+EXPOSE 8888 4040
 
 # make directory for notebooks
 RUN mkdir /root/jup

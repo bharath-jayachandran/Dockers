@@ -1,8 +1,8 @@
 FROM ubuntu:16.04
 
-USER root
-
 LABEL maintainer=Bharath “bharath.jayachandran@live.com”
+
+USER root
 
 # base installs
 RUN apt-get update && apt-get install -y \

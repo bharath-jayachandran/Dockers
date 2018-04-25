@@ -12,41 +12,27 @@ vim \
 git \
 bzip2 
 
-# install java 7
+#install java 8
 RUN add-apt-repository ppa:webupd8team/java
 RUN apt-get update
 RUN echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
-RUN apt-get -y install oracle-java7-installer -y
-
+RUN apt-get -y install oracle-java8-installer -y
 
 #install spark
-RUN wget http://mirror.nexcess.net/apache/spark/spark-1.6.2/spark-1.6.2-bin-hadoop2.6.tgz
-# RUN wget http://www.gtlib.gatech.edu/pub/apache/spark/spark-1.6.1/spark-1.6.1-bin-hadoop2.6.tgz
-RUN tar xvf spark-1.6.2-bin-hadoop2.6.tgz -C ~/ && rm /spark-1.6.2-bin-hadoop2.6.tgz
-RUN mv ~/spark-1.6.2-bin-hadoop2.6 ~/spark
+RUN wget http://www-eu.apache.org/dist/spark/spark-2.3.0/spark-2.3.0-bin-hadoop2.7.tgz
+RUN tar xvf spark-2.3.0-bin-hadoop2.7.tgz -C ~/ && rm /spark-2.3.0-bin-hadoop2.7.tgz
+RUN mv ~/spark-2.3.0-bin-hadoop2.7 ~/spark
 
-# install anaconda
-RUN cd ~ && wget http://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh
-RUN bash ~/Anaconda3-4.2.0-Linux-x86_64.sh -b -p /root/anaconda
+#install anaconda
+RUN cd ~ && wget https://repo.anaconda.com/archive/Anaconda3-5.1.0-Linux-x86_64.sh
+RUN bash ~/Anaconda3-5.1.0-Linux-x86_64.sh -b -p /root/anaconda
 ENV PATH /root/anaconda/bin:$PATH
 
 #ENV SPARK
 ENV PYSPARK_PYTHON python3
 ENV PYSPARK_DRIVER_PYTHON jupyter
-ENV PYSPARK_DRIVER_PYTHON_OPTS "notebook --no-browser --port=8888 --ip='0.0.0.0'"
+ENV PYSPARK_DRIVER_PYTHON_OPTS "notebook --no-browser --port=8888 --allow-root --ip='0.0.0.0'"
 ENV PATH /root/spark/bin:$PATH
-
-
-# Install python packages
-RUN conda install bokeh -y \
-    conda install csvkit -y \
-    pip install utils \
-    conda install seaborn -y \
-    conda install matplotlib -y \
-    conda install scipy -y \
-    conda install numpy -y \
-    conda install ipython -y \
-
 
 # expose jupyter notebook port 8888
 EXPOSE 8888 4040
@@ -59,5 +45,5 @@ WORKDIR /root/jup
 
 # default command
 
-CMD ["/bin/bash"]
+CMD ["pyspark"]
 
